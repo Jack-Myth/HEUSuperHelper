@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.DataSetObserver;
 import android.net.Uri;
 import android.net.http.SslError;
@@ -264,9 +265,21 @@ public class Helper_Main extends AppCompatActivity
                         MakeAutoLoginDialogForCAS(false);
                     }
                 });
+                try
+                {
+                    String version= getPackageManager().getPackageInfo(getPackageName(),0).versionName;
+                    ((TextView)tmpView.findViewById(R.id.Setting_Version)).setText(version);
+                } catch (PackageManager.NameNotFoundException e)
+                {
+                    e.printStackTrace();
+                    new AlertDialog.Builder(Me)
+                            .setMessage("获取版本号失败")
+                            .setCancelable(true)
+                            .show();
+                }
                 new AlertDialog.Builder(Me)
                         .setView(tmpView)
-                        .setPositiveButton("取消校园门户自动登陆", new DialogInterface.OnClickListener()
+                        .setPositiveButton("取消内网自动登陆", new DialogInterface.OnClickListener()
                         {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i)

@@ -135,10 +135,10 @@ public class Login extends AppCompatActivity
             @Override
             public boolean onJsConfirm(WebView view, String url, String message, JsResult result)
             {
-                if (message.contains("错误"))
+                Toast.makeText(L,message,Toast.LENGTH_SHORT).show();
+                if (message.contains("错误")||message.contains("不"))
                 {
                     //登录失败
-                    Toast.makeText(L,message,Toast.LENGTH_SHORT).show();
                     findViewById(R.id.Login_Login).setVisibility(View.VISIBLE);
                     findViewById(R.id.Login_Logining).setVisibility(View.INVISIBLE);
                     findViewById(R.id.Login_WhatIs).setVisibility(View.VISIBLE);
@@ -233,7 +233,8 @@ public class Login extends AppCompatActivity
                                 "如果你记不清你的账号和密码，请参照以下说明和你经常使用的密码来试试:\n" +
                                 "1.登录使用的帐号是用户的工号（教师）或学号（学生）。\n" +
                                 "2.初始密码为本人“15或18位”身份证号码的后8位（“X”为大写字母）。\n" +
-                                "如果实在无法登陆，请点击下方按钮，在打开的页面中选择\"忘记密码\"来尝试重置.")
+                                "如果实在无法登陆，请点击下方按钮，在打开的页面中选择\"忘记密码\"来尝试重置.\n"+
+                                "另外:如果遇到校园信息门户可以正常登陆，但是在软件内却无法登陆的情况，请向我反馈这个情况.")
                         .setPositiveButton("我实在记不起来了", new DialogInterface.OnClickListener()
                         {
                             @Override
