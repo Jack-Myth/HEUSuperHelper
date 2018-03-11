@@ -65,6 +65,7 @@ public class Login extends AppCompatActivity
                     findViewById(R.id.Login_Login).setVisibility(View.VISIBLE);
                     findViewById(R.id.Login_Logining).setVisibility(View.INVISIBLE);
                     findViewById(R.id.Login_WhatIs).setVisibility(View.VISIBLE);
+                    findViewById(R.id.Login_UsePubilcAccount).setVisibility(View.VISIBLE);
                 }
                 super.onReceivedError(view, errorCode, description, failingUrl);
             }
@@ -87,11 +88,7 @@ public class Login extends AppCompatActivity
             public void onPageFinished(WebView view, String url)
             {
                 super.onPageFinished(view, url);
-                if(url.contains("login_psw"))
-                {
-                    return;
-                }
-                else if (url.contains("portal.hrbeu.edu.cn")&&!Login_succeed)
+                if (url.contains("portal.hrbeu.edu.cn")&&!Login_succeed)
                 {
                     Login_succeed=true;
                     SharedPreferences.Editor SPEditor=getSharedPreferences("LoginSettings", Context.MODE_PRIVATE).edit();
@@ -119,13 +116,14 @@ public class Login extends AppCompatActivity
             @Override
             public boolean onJsAlert(WebView view, String url, String message, JsResult result)
             {
-                if (message.contains("错误"))
+                if (message.contains("错误")||message.contains("不"))
                 {
                     //登录失败
                     Toast.makeText(L,message,Toast.LENGTH_SHORT).show();
                     findViewById(R.id.Login_Login).setVisibility(View.VISIBLE);
                     findViewById(R.id.Login_Logining).setVisibility(View.INVISIBLE);
                     findViewById(R.id.Login_WhatIs).setVisibility(View.VISIBLE);
+                    findViewById(R.id.Login_UsePubilcAccount).setVisibility(View.VISIBLE);
                 }
                 result.confirm();
                 return true;
@@ -142,6 +140,7 @@ public class Login extends AppCompatActivity
                     findViewById(R.id.Login_Login).setVisibility(View.VISIBLE);
                     findViewById(R.id.Login_Logining).setVisibility(View.INVISIBLE);
                     findViewById(R.id.Login_WhatIs).setVisibility(View.VISIBLE);
+                    findViewById(R.id.Login_UsePubilcAccount).setVisibility(View.VISIBLE);
                 }
                 result.confirm();
                 return true;
@@ -204,8 +203,15 @@ public class Login extends AppCompatActivity
                 {
                     BeginLogin();
                 }
+                else if(getSharedPreferences("LoginSettings",Context.MODE_PRIVATE).getBoolean("AutoUsePublic",false))
+                {
+                    LoginWithPublicAccount();
+                }
                 else
+                {
                     findViewById(R.id.Login_WhatIs).setVisibility(View.VISIBLE);
+                    findViewById(R.id.Login_UsePubilcAccount).setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -234,7 +240,7 @@ public class Login extends AppCompatActivity
                                 "1.登录使用的帐号是用户的工号（教师）或学号（学生）。\n" +
                                 "2.初始密码为本人“15或18位”身份证号码的后8位（“X”为大写字母）。\n" +
                                 "如果实在无法登陆，请点击下方按钮，在打开的页面中选择\"忘记密码\"来尝试重置.\n"+
-                                "另外:如果遇到校园信息门户可以正常登陆，但是在软件内却无法登陆的情况，请向我反馈这个情况.")
+                                "另外:如果遇到校园信息门户可以正常登陆，但是在软件内却无法登陆的情况，请给我发邮件来反馈.")
                         .setPositiveButton("我实在记不起来了", new DialogInterface.OnClickListener()
                         {
                             @Override
@@ -263,6 +269,36 @@ public class Login extends AppCompatActivity
                         .show();
             }
         });
+        findViewById(R.id.Login_UsePubilcAccount).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                new AlertDialog.Builder(L)
+                        .setTitle("使用公共账户登陆")
+                        .setMessage("如果你的账号因为各种问题而无法使用，或者根本没有帐户的情况下，此功能可以让你使用公共账户登陆。\n" +
+                                "不过，如果你自己的帐户可以使用的话，还是建议使用你本人的账户。")
+                        .setPositiveButton("仅登陆一次", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i)
+                            {
+                                LoginWithPublicAccount();
+                            }
+                        })
+                        .setNeutralButton("自动登陆公共账户", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i)
+                            {
+                                getSharedPreferences("LoginSettings",Context.MODE_PRIVATE).edit().putBoolean("AutoUsePublic",true).commit();
+                                LoginWithPublicAccount();
+                            }
+                        })
+                        .setCancelable(true)
+                        .show();
+            }
+        });
     }
 
     void BeginLogin()
@@ -279,5 +315,12 @@ public class Login extends AppCompatActivity
             return;
         }
         tmpWebView.loadUrl("https://ssl.hrbeu.edu.cn/por/login_psw.csp?svpn_name="+UserName+"&svpn_password="+Password);
+    }
+
+    void LoginWithPublicAccount()
+    {
+        findViewById(R.id.Login_Login).setVisibility(View.INVISIBLE);
+        findViewById(R.id.Login_Logining).setVisibility(View.VISIBLE);
+        tmpWebView.loadUrl("http://jackmyth.cn/HEUSuperHelper/LoginWithPublicAccount.php");
     }
 }

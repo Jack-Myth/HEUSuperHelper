@@ -52,6 +52,7 @@ public class Helper_Main extends AppCompatActivity
             super.onCreate(savedInstanceState);
             setContentView(R.layout.helper_main);
             final Helper_Main Me=this;
+            GlobalApplication.App.CheckNewVersion(Me);
             MainWebView=(WebView)findViewById(R.id.Main_MainWebView);
             ELV=findViewById(R.id.WebList);
             DrawerL=findViewById(R.id.DrawerL);
@@ -105,11 +106,13 @@ public class Helper_Main extends AppCompatActivity
                     if (SP.getBoolean("Enabled",false)&&url.contains("cas.hrbeu.edu.cn/cas/login")&&!AutoLogining)
                     {
                         MainWebView.getSettings().setBlockNetworkImage(true);
+                        MainWebView.getSettings().setLoadsImagesAutomatically(false);
                         Toast.makeText(Me,"正在自动登陆",Toast.LENGTH_SHORT).show();
                     }
                     else
                     {
                         MainWebView.getSettings().setBlockNetworkImage(false);
+                        MainWebView.getSettings().setLoadsImagesAutomatically(true);
                         AutoLogining=false;
                     }
                     webview.loadUrl(url);
@@ -285,6 +288,7 @@ public class Helper_Main extends AppCompatActivity
                             public void onClick(DialogInterface dialogInterface, int i)
                             {
                                 getSharedPreferences("LoginSettings", Context.MODE_PRIVATE).edit().remove("AutoLogin").commit();
+                                getSharedPreferences("LoginSettings", Context.MODE_PRIVATE).edit().remove("AutoUsePublic").commit();
                                 Toast.makeText(Me,"已取消自动登陆",Toast.LENGTH_SHORT).show();
                             }
                         })
@@ -398,6 +402,8 @@ public class Helper_Main extends AppCompatActivity
                                     .setCancelable(true)
                                     .show();
                         }
+                        if (MainWebView.getUrl().contains("cas.hrbeu.edu.cn/cas/login"))
+                            MainWebView.loadUrl(MainWebView.getUrl());
                     }
                 })
                 .setNeutralButton("关闭自动登陆", new DialogInterface.OnClickListener()
@@ -492,6 +498,8 @@ class WebListELVAdapter implements ExpandableListAdapter
         BuiltinWebSiteList=new HashMap<String, String>();
         BuiltinWebSiteList.put("教学一体化服务平台","https://ssl.hrbeu.edu.cn/web/1/http/0/edusys.hrbeu.edu.cn/jsxsd/");
         BuiltinWebSiteList.put("实验室综合管理系统","https://ssl.hrbeu.edu.cn/web/1/http/0/lims.hrbeu.edu.cn/");
+        BuiltinWebSiteList.put("哈尔滨工程大学图书馆","https://ssl.hrbeu.edu.cn/web/1/http/0/lib.hrbeu.edu.cn/");
+        BuiltinWebSiteList.put("校园卡网络服务平台","https://ssl.hrbeu.edu.cn/web/1/http/0/ecard.hrbeu.edu.cn/");
     }
 
     @Override
