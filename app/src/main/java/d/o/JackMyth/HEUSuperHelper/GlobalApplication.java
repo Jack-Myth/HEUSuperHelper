@@ -35,7 +35,7 @@ public class GlobalApplication extends Application
             BrowserToCheckNewVersion.addJavascriptInterface(new Object()
             {
                 @JavascriptInterface
-                void ReportNewestVersion(final int Version, String VersionName, String VersionMessage)
+                public void ReportNewestVersion(final int Version, String VersionName, String VersionMessage)
                 {
                     try
                     {
