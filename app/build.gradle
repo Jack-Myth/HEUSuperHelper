@@ -6,8 +6,8 @@ android {
         applicationId "d.o.JackMyth.HEUSuperHelper"
         minSdkVersion 17
         targetSdkVersion 26
-        versionCode 3
-        versionName "v1.21"
+        versionCode 4
+        versionName "v1.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
