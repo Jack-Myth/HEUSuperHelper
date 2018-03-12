@@ -21,6 +21,7 @@ import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.SslErrorHandler;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
@@ -66,6 +67,8 @@ public class Helper_Main extends AppCompatActivity
             MainWebView.getSettings().setSupportZoom(true);
             MainWebView.getSettings().setBuiltInZoomControls(true);
             MainWebView.getSettings().setDisplayZoomControls(false);
+            MainWebView.getSettings().setAllowContentAccess(true);
+            MainWebView.setWebChromeClient(new WebChromeClient());
             MainWebView.addJavascriptInterface(new Object()
             {
                 @JavascriptInterface
@@ -162,7 +165,7 @@ public class Helper_Main extends AppCompatActivity
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i)
                             {
-                                if(getSharedPreferences("Websites",Context.MODE_PRIVATE).getString(InputWebsiteName.getText().toString(),"")!="")
+                                if(!getSharedPreferences("Websites",Context.MODE_PRIVATE).getString(InputWebsiteName.getText().toString(),"").equals(""))
                                 {
                                     new AlertDialog.Builder(Me)
                                             .setTitle("此名称已存在")
@@ -197,7 +200,7 @@ public class Helper_Main extends AppCompatActivity
                                 final String tmpA[]=new String[2];
                                 tmpA[0]="";
                                 final String TargetURL= Me.MakeURL(InputWebsite.getText().toString(),tmpA);
-                                if (tmpA[0]!="")
+                                if (!tmpA[0].equals(""))
                                 {
                                     new AlertDialog.Builder(Me)
                                             .setCancelable(true)
